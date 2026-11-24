@@ -807,7 +807,7 @@
     background: linear-gradient(115deg, transparent 44%, rgba(255,255,255,.45) 50%, transparent 56%);
     transform: translateX(-75%); animation: envSheen 6s ease-in-out 1.2s infinite; }
   @keyframes envSheen { 0%, 25% { transform: translateX(-75%); } 55%, 100% { transform: translateX(75%); } }
-  .env-seal::before { content: ""; position: absolute; inset: 7%; border-radius: 50%; border: 1.5px solid rgba(239,217,160,.75);
+  .env-seal::before { display: none; content: ""; position: absolute; inset: 7%; border-radius: 50%; border: 1.5px solid rgba(239,217,160,.75);
     box-shadow: inset 0 0 0 3px rgba(92,15,31,.6), inset 0 0 0 4px rgba(239,217,160,.25); }
   .env-seal::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; pointer-events: none;
     box-shadow: 0 0 0 0 rgba(201,166,90,.55); animation: sealPulse 2.4s ease-out infinite; }
@@ -878,7 +878,7 @@
           <div class="env-bottom"></div>
         </div>
         <div class="env-flap"></div>
-        <div class="env-seal" aria-hidden="true"><span class="seal-ini" aria-hidden="true"><b>U</b><i>&amp;</i><b>H</b></span></div>
+        <div class="env-seal" aria-hidden="true"><svg><use href="#mono"/></svg></div>
       </div>
       <div class="tap-hint">Tap to open</div>
       <div class="env-foot">Wedding Reception · 13 December 2026</div>
