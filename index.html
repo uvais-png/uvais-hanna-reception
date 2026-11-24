@@ -1289,45 +1289,10 @@
     return { burst: burst };
   })();
 
-  /* ---------- Opening sound: a slow, soft swell with a gentle chime that eases into the music (synthesised) ---------- */
-  function openSfx() {
-    try {
-      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-      var c = new AC(), t = c.currentTime + 0.03, out = c.createGain(), lp = c.createBiquadFilter();
-      lp.type = 'lowpass'; lp.frequency.value = 5200; out.gain.value = 0.9; out.connect(lp); lp.connect(c.destination);
-      var len = Math.floor(c.sampleRate * 4), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
-      for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-      function swell(at, peak, attack, release) {
-        var g = c.createGain(); g.gain.setValueAtTime(0.0001, at);
-        g.gain.exponentialRampToValueAtTime(peak, at + attack); g.gain.exponentialRampToValueAtTime(0.0001, at + attack + release);
-        g.connect(out); return g;
-      }
-      // airy breath, like silk unfolding
-      var n = c.createBufferSource(), nf = c.createBiquadFilter(); n.buffer = buf; nf.type = 'bandpass'; nf.Q.value = .6;
-      nf.frequency.setValueAtTime(380, t); nf.frequency.exponentialRampToValueAtTime(1600, t + 1.4); nf.frequency.exponentialRampToValueAtTime(700, t + 3.2);
-      n.connect(nf); nf.connect(swell(t, .05, .9, 2.4)); n.start(t); n.stop(t + 3.5);
-      // warm, slow pad (A and E, open and calm)
-      [[220, -4], [220, 4], [329.63, 0], [440, -3]].forEach(function (v) {
-        var o = c.createOscillator(); o.type = 'triangle'; o.frequency.value = v[0]; o.detune.value = v[1];
-        o.connect(swell(t + .1, .022, 1.1, 2.6)); o.start(t + .1); o.stop(t + 4);
-      });
-      // gentle chime, three slow notes
-      [[880, .55], [1318.51, 1.05], [1760, 1.6]].forEach(function (v, k) {
-        var at = t + v[1];
-        [[1, .045 - k * .008], [2.01, .01]].forEach(function (h) {
-          var o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = v[0] * h[0];
-          g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(h[1], at + .06); g.gain.exponentialRampToValueAtTime(0.0001, at + 2.8);
-          o.connect(g); g.connect(out); o.start(at); o.stop(at + 3);
-        });
-      });
-      setTimeout(function () { try { c.close(); } catch (e) {} }, 5000);
-    } catch (e) {}
-  }
 
   function openEnvelope() {
     if (opened) return;
     opened = true;
-    openSfx();
     music.start();
     try { if (navigator.vibrate) navigator.vibrate(25); } catch (e) {}
     envFx.burst();
