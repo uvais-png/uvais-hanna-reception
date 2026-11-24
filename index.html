@@ -1005,9 +1005,10 @@
       document.body.appendChild(yt);
     }
     function ytFallback() {
+      // no music-box fallback on this card: if Jhol can't play, stay silent and hide the music button
+      var sb = document.getElementById('sound'); if (sb) sb.style.display = 'none';
       if (ytFailed) return;
       ytFailed = true; ytPost('pauseVideo');
-      try { startSynth(); if (!on) setOn(false); } catch (e) {}
     }
     ytSetup();
     // Original upbeat piece in D major, 112 bpm. Two bars of harp, then bass, frame drum, claps,
@@ -1133,6 +1134,7 @@
         setTimeout(function () { if (!ytPlaying) ytFallback(); }, 4000);
         return;
       }
+      if (YOUTUBE_ID) { ytFallback(); return; }
       try { TRACK_URL ? startTrack() : startSynth(); } catch (e) { started = false; }
     }
 
