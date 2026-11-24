@@ -840,6 +840,23 @@
   #scene-card .cameos { display: flex; justify-content: center; width: auto; }
   #scene-card .cameo { display: none; }
   #scene-card .cameo-mono { width: clamp(64px, 10vh, 100px); height: clamp(64px, 10vh, 100px); }
+  /* re-arranged without the portraits: content spreads over the full screen height and reads larger */
+  #scene-card .card { min-height: 100%; box-sizing: border-box; align-content: space-evenly; max-width: 420px;
+    gap: clamp(8px, 1.6vh, 18px); padding-block: max(36px, 5.5vh) max(34px, 5vh); }
+  #scene-card .bismillah-top .ar { font-size: clamp(22px, 3.7vh, 34px); }
+  #scene-card .bismillah-top .tr { font-size: clamp(11.5px, 1.65vh, 14.5px); max-width: 30ch; }
+  #scene-card .cameo-mono { width: clamp(72px, 12vh, 118px); height: clamp(72px, 12vh, 118px); }
+  #scene-card .names .event { font-size: clamp(11px, 1.6vh, 14px); }
+  #scene-card .names h1 { font-size: clamp(36px, min(7.6vh, 14vw), 66px); }
+  #scene-card .letter { width: min(calc(100% - 28px), 350px); padding: clamp(12px, 2.2vh, 22px) clamp(16px, 5vw, 24px); }
+  #scene-card .letter .body { font-size: clamp(14.5px, 2.2vh, 18.5px); line-height: 1.55; }
+  #scene-card .cta { gap: clamp(8px, 1.8vh, 16px); }
+  #scene-card .when { font-size: clamp(10.5px, 1.45vh, 13px); width: min(calc(100% - 28px), 340px); }
+  #scene-card .when .num { font-size: clamp(30px, 5.2vh, 46px); }
+  #scene-card .when small { font-size: clamp(8.5px, 1.15vh, 10.5px); }
+  #scene-card .where { font-size: clamp(10.5px, 1.45vh, 13px); }
+  #scene-card .btn { padding: clamp(9px, 1.4vh, 12px) clamp(13px, 4vw, 20px); }
+  @media (max-height: 700px) { #scene-card .card { padding-block: 28px 26px; } }
 </style>
 
 </head>
