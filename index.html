@@ -863,6 +863,7 @@
     width: 34px; height: 34px; background: rgba(40,6,14,.35); }
   .sound svg { width: 16px; height: 16px; }
   .sound .bars { height: 11px; } .sound .bars i { width: 2px; }
+  .credit { margin: 2px 0 0; font-family: var(--font-serif); font-style: italic; font-size: clamp(10.5px, 1.4vh, 12px); letter-spacing: .04em; color: rgba(239,217,160,.7); }
 </style>
 
 </head>
@@ -978,6 +979,7 @@
             Add to Calendar
           </a>
         </div>
+        <p class="credit">&#9835; Piano Cover by The 88 Keys</p>
       </div>
     </div>
   </section>
@@ -986,9 +988,10 @@
 <script>
   // Optional: path to an mp3 published next to this page (e.g. 'music.mp3').
   // Empty plays the built-in music-box piece instead.
-  var TRACK_URL = '';
+  // Background music: Jhol piano cover by The 88 Keys, used with the creator's permission (credit shown on the card).
+  var TRACK_URL = 'music/jhol.m4a';
   // Background music from YouTube (video id). The built-in music box plays if YouTube can't start.
-  var YOUTUBE_ID = '_hoDOkLm38A';
+  var YOUTUBE_ID = '';   // YouTube no longer needed: the music file is served with the page
   // Optional: paste the venue's exact Google Maps share link here. Empty searches Maps by name.
   var MAP_URL = '';
 
@@ -1146,12 +1149,26 @@
       return true;
     }
 
+    // The file is preloaded with the page so it starts instantly on the seal tap.
+    var TRACK_VOL = 0.5, preEl = null, trackGain = null;
+    if (TRACK_URL) { preEl = new Audio(TRACK_URL); preEl.preload = 'auto'; preEl.loop = true; try { preEl.load(); } catch (e) {} }
     function startTrack() {
-      audioEl = new Audio(TRACK_URL);
+      audioEl = preEl || new Audio(TRACK_URL);
       audioEl.loop = true;
-      audioEl.volume = 0.6;
+      // iPhones ignore audio.volume, so the level is set through Web Audio where available
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) {
+          var ac = new AC(), src = ac.createMediaElementSource(audioEl);
+          trackGain = ac.createGain(); trackGain.gain.value = TRACK_VOL;
+          src.connect(trackGain); trackGain.connect(ac.destination);
+          if (ac.state === 'suspended' && ac.resume) ac.resume();
+          audioEl.volume = 1;
+        } else { audioEl.volume = TRACK_VOL; }
+      } catch (e) { audioEl.volume = TRACK_VOL; }
+      try { audioEl.currentTime = 0; } catch (e) {}
       var p = audioEl.play();
-      if (p && p.catch) p.catch(function () { audioEl = null; startSynth(); });
+      if (p && p.catch) p.catch(function () {});
       return true;
     }
 
@@ -1179,6 +1196,7 @@
 
     document.addEventListener('visibilitychange', function () {
       if (yt && !ytFailed && started) { if (document.hidden) ytPost('pauseVideo'); else if (on) ytPlay(); return; }
+      if (audioEl && started) { if (document.hidden) audioEl.pause(); else if (on) audioEl.play(); return; }
       if (!ctx) return;
       if (document.hidden) ctx.suspend(); else if (on) ctx.resume();
     });
