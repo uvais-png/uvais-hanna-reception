@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<meta charset="utf-8">
+<title>Uvais &amp; Hanna · Wedding Reception</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Amiri:ital,wght@0,400;1,400&display=swap">
+<style>
+  /* Layout: a single phone-shaped stage. Scene 1 is a champagne envelope with a wax seal;
+     tapping it opens the flap and crossfades to Scene 2, a burgundy card with an ornate gold
+     photobooth frame that "prints" a strip of three photos, then the names and date. */
+  :root {
+    --burgundy: #5c0f1f;
+    --burgundy-deep: #3a0812;
+    --gold: #c9a65a;
+    --gold-light: #efd9a0;
+    --gold-dark: #8c6a2b;
+    --champagne: #e9d4c6;
+    --champagne-deep: #c9ab98;
+    --paper: #f3e6cf;
+    --ink: #3b2a1e;
+    --font-script: 'Great Vibes', 'Snell Roundhand', 'Brush Script MT', cursive;
+    --font-caps: 'Cinzel', 'Trajan Pro', 'Cormorant Garamond', Georgia, serif;
+    --font-serif: 'Cormorant Garamond', 'Cormorant', Garamond, 'Times New Roman', serif;
+    --font-arabic: 'Amiri', 'Scheherazade New', 'Geeza Pro', 'Times New Roman', serif;
+    color-scheme: dark;
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--burgundy-deep);
+    color: var(--paper);
+    font-family: var(--font-serif);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage {
+    position: relative;
+    height: 100%;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .scene {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: opacity 1.1s ease;
+  }
+  .card, .envelope-wrap { margin: auto; }
+  .scene[hidden] { display: none; }
+  .scene.fade { opacity: 0; pointer-events: none; }
+
+  /* ---------- Scene 1: envelope ---------- */
+  #scene-envelope {
+    background:
+      radial-gradient(120% 80% at 30% 20%, rgba(255,255,255,.35), transparent 60%),
+      repeating-linear-gradient(100deg, rgba(255,255,255,.07) 0 2px, transparent 2px 5px),
+      linear-gradient(160deg, #efdccf, var(--champagne) 45%, #d8bba9 100%);
+  }
+  .envelope-wrap {
+    display: grid;
+    gap: 28px;
+    justify-items: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .envelope {
+    position: relative;
+    width: min(78vw, 330px);
+    aspect-ratio: 1.42;
+    max-width: 100%;
+    perspective: 900px;
+    filter: drop-shadow(0 18px 30px rgba(80,40,30,.28));
+    animation: hover 4.5s ease-in-out infinite;
+  }
+  @keyframes hover {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .env-body {
+    position: absolute; inset: 0;
+    background: linear-gradient(170deg, #efdcd0, #dcc0b0);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .env-card {
+    position: absolute;
+    left: 7%; right: 7%; top: 6%;
+    height: 90%;
+    background: var(--burgundy);
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.25);
+    transition: transform 1s cubic-bezier(.2,.7,.2,1) .35s;
+    display: grid;
+    place-items: center;
+    color: var(--gold-light);
+    font-family: var(--font-script);
+    font-size: clamp(26px, 8vw, 38px);
+  }
+  .env-left, .env-right, .env-bottom {
+    position: absolute; inset: 0;
+    background: linear-gradient(150deg, #f0dfd2, #d9bfae);
+  }
+  .env-left   { clip-path: polygon(0 0, 50% 50%, 0 100%); }
+  .env-right  { clip-path: polygon(100% 0, 50% 50%, 100% 100%); background: linear-gradient(210deg, #f0dfd2, #d5b9a8); }
+  .env-bottom { clip-path: polygon(0 100%, 50% 50%, 100% 100%); background: linear-gradient(0deg, #e9d2c3, #dcc1b1); }
+  .env-flap {
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 55%;
+    background: linear-gradient(180deg, #f3e4d8, #dcc0b0);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 1s cubic-bezier(.4,0,.2,1);
+    z-index: 3;
+    backface-visibility: hidden;
+  }
+  .env-seal {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 22%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -40%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #8e2b3d, var(--burgundy) 60%, #3f0a16);
+    box-shadow: 0 3px 8px rgba(0,0,0,.35), inset 0 0 0 3px rgba(255,255,255,.08);
+    display: grid; place-items: center;
+    color: var(--gold-light);
+    z-index: 4;
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .env-seal svg { width: 78%; height: 78%; opacity: .9; }
+  .env-card { font-family: var(--font-caps); font-size: clamp(18px, 6vw, 28px); letter-spacing: .3em; }
+  .envelope.open .env-flap { transform: rotateX(180deg); z-index: 1; }
+  .envelope.open .env-seal { opacity: 0; transform: translate(-50%, -40%) scale(.6); }
+  .envelope.open .env-card { transform: translateY(-62%); }
+  .envelope.open { animation: none; }
+  .tap-hint {
+    font-family: var(--font-caps);
+    font-size: 11px;
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: #7a5a4a;
+    transition: opacity .4s;
+  }
+  .envelope.open + .tap-hint { opacity: 0; }
+  .env-head {
+    text-align: center;
+    display: grid;
+    gap: 4px;
+    color: #6a3a3a;
+    transition: opacity .6s;
+  }
+  .env-head .small {
+    font-family: var(--font-caps);
+    font-size: 11px;
+    letter-spacing: .34em;
+    text-transform: uppercase;
+    color: #8a6a5a;
+  }
+  .env-head .big {
+    font-family: var(--font-script);
+    font-size: clamp(40px, 11vw, 54px);
+    line-height: 1.1;
+    color: var(--burgundy);
+  }
+  .env-foot {
+    font-family: var(--font-caps);
+    font-size: 11px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: #8a6a5a;
+  }
+  .envelope-wrap.opened .env-head, .envelope-wrap.opened .env-foot { opacity: 0; }
+
+  /* ---------- Scene 2: photobooth card ---------- */
+  #scene-card {
+    background:
+      radial-gradient(90% 60% at 50% 0%, rgba(255,120,120,.18), transparent 60%),
+      radial-gradient(80% 50% at 50% 100%, rgba(0,0,0,.45), transparent 70%),
+      repeating-linear-gradient(45deg, rgba(255,215,160,.035) 0 1px, transparent 1px 22px),
+      repeating-linear-gradient(-45deg, rgba(255,215,160,.035) 0 1px, transparent 1px 22px),
+      linear-gradient(180deg, #6b1324, var(--burgundy) 50%, #4a0c19);
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  #scene-card.show { opacity: 1; }
+  .card {
+    width: 100%;
+    max-width: 420px;
+    display: grid;
+    gap: clamp(16px, 3vh, 26px);
+    justify-items: center;
+    padding-block: 40px;
+  }
+  .bismillah-top {
+    text-align: center;
+    display: grid;
+    gap: 2px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .9s ease, transform .9s ease;
+  }
+  .bismillah-top .ar {
+    font-family: var(--font-arabic);
+    font-size: 26px;
+    line-height: 1.5;
+    color: var(--gold-light);
+    direction: rtl;
+    text-shadow: 0 1px 8px rgba(0,0,0,.35);
+  }
+  .bismillah-top .tr { max-width: 26ch; margin: 0 auto; text-wrap: balance; line-height: 1.35;
+  }
+  .bismillah-top .tr {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--gold);
+    letter-spacing: .04em;
+  }
+  .eyebrow {
+    font-family: var(--font-caps);
+    font-size: 11px;
+    letter-spacing: .38em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .9s ease, transform .9s ease;
+  }
+  .reveal.in, .names.in, .cta.in { opacity: 1; transform: none; }
+
+  /* ornate frame */
+  .frame {
+    position: relative;
+    width: min(74vw, 290px);
+    aspect-ratio: .78;
+    max-width: 100%;
+    transform: scale(.85);
+    opacity: 0;
+    transition: transform 1.1s cubic-bezier(.2,.8,.2,1), opacity 1.1s ease;
+  }
+  .frame.in { transform: none; opacity: 1; }
+  .frame-outer {
+    position: absolute; inset: 0;
+    border-radius: 42px 42px 42px 42px / 46px 46px 46px 46px;
+    background: linear-gradient(135deg, #f1dca2, var(--gold) 35%, #a27d33 60%, #e9cf8c 85%, var(--gold-dark));
+    box-shadow:
+      0 20px 40px rgba(0,0,0,.45),
+      0 0 0 1px rgba(255,235,180,.25),
+      inset 0 0 0 2px rgba(80,55,10,.35);
+    overflow: hidden;
+  }
+  .frame-outer::after {
+    content: "";
+    position: absolute; inset: -40%;
+    background: linear-gradient(115deg, transparent 42%, rgba(255,250,230,.55) 50%, transparent 58%);
+    transform: translateX(-70%);
+    animation: sheen 7s ease-in-out 3s infinite;
+  }
+  @keyframes sheen {
+    0%, 20% { transform: translateX(-70%); }
+    45%, 100% { transform: translateX(70%); }
+  }
+  .sparkles {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  #scene-card .card { position: relative; z-index: 1; }
+  .frame-inner {
+    position: absolute; inset: 11px;
+    border-radius: 34px / 38px;
+    background:
+      radial-gradient(120% 80% at 30% 15%, rgba(255,255,255,.55), transparent 55%),
+      linear-gradient(170deg, #f4e3c2, #d9bf93 60%, #cdb084);
+    box-shadow:
+      inset 0 0 0 1.5px var(--gold-dark),
+      inset 0 0 0 4px rgba(255,245,215,.5),
+      inset 0 0 0 5.5px var(--gold),
+      inset 0 14px 24px rgba(90,60,20,.18);
+  }
+  /* corner & edge flourishes: small simple arcs */
+  .flourish {
+    position: absolute;
+    width: 56px; height: 56px;
+    color: var(--gold);
+    filter: drop-shadow(0 1px 1px rgba(80,50,0,.5));
+  }
+  .flourish.tl { left: -14px; top: -14px; }
+  .flourish.tr { right: -14px; top: -14px; transform: scaleX(-1); }
+  .flourish.bl { left: -14px; bottom: -14px; transform: scaleY(-1); }
+  .flourish.br { right: -14px; bottom: -14px; transform: scale(-1); }
+  .crest {
+    position: absolute;
+    left: 50%; top: -22px;
+    width: 92px; height: 34px;
+    transform: translateX(-50%);
+    color: var(--gold);
+    filter: drop-shadow(0 1px 1px rgba(80,50,0,.5));
+  }
+  .crest.bottom { top: auto; bottom: -22px; transform: translateX(-50%) scaleY(-1); }
+
+  /* slot + strip */
+  .slot {
+    position: absolute;
+    left: 50%; top: 17%;
+    width: 46%;
+    height: 9px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #2a1a08, #0e0905);
+    border-radius: 4px;
+    box-shadow: 0 1px 0 rgba(255,240,200,.5), inset 0 2px 3px rgba(0,0,0,.8);
+    z-index: 4;
+  }
+  .slot::before, .slot::after {
+    content: "";
+    position: absolute; top: -5px;
+    width: 3px; height: 19px;
+    background: var(--gold-dark);
+    border-radius: 2px;
+  }
+  .slot::before { left: -7px; }
+  .slot::after { right: -7px; }
+  .strip-window {
+    position: absolute;
+    left: 50%; top: calc(17% + 5px);
+    width: 36%;
+    height: 76%;
+    transform: translateX(-50%);
+    overflow: hidden;
+    z-index: 3;
+  }
+  .strip {
+    width: 100%;
+    background: #f7f1e6;
+    padding: 5px 5px 8px;
+    box-sizing: border-box;
+    display: grid;
+    gap: 4px;
+    box-shadow: 0 6px 14px rgba(0,0,0,.35);
+    transform: translateY(-102%);
+    transition: transform 3.2s cubic-bezier(.3,.6,.3,1);
+  }
+  .strip.in { transform: translateY(0); }
+  .shot {
+    aspect-ratio: 1 / .82;
+    background: #2a1d14;
+    position: relative;
+    overflow: hidden;
+    display: grid; place-items: center;
+    color: rgba(235,210,170,.85);
+    font-family: var(--font-script);
+    font-size: 20px;
+    filter: sepia(.55) contrast(1.05);
+  }
+  .shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .shot.ph { background:
+      radial-gradient(60% 50% at 50% 70%, #6b4b32, transparent 70%),
+      linear-gradient(180deg, #5a4030, #2a1d14); }
+  .strip-foot {
+    text-align: center;
+    font-family: var(--font-caps);
+    font-size: 7px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: #7c6650;
+    display: grid; justify-items: center; gap: 3px;
+  }
+  .strip-mono { width: 16px; height: 16px; color: #7c6650; }
+
+  .names-mono { width: 64px; height: 64px; color: var(--gold); justify-self: center; margin-bottom: 4px; filter: drop-shadow(0 2px 6px rgba(0,0,0,.4)); }
+  .names {
+    text-align: center;
+    display: grid;
+    gap: 6px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 1s ease .1s, transform 1s ease .1s;
+  }
+  .names h1 {
+    margin: 0;
+    font-family: var(--font-script);
+    font-weight: 400;
+    font-size: clamp(48px, 14vw, 66px);
+    line-height: 1.1;
+    color: var(--gold-light);
+    text-wrap: balance;
+    text-shadow: 0 2px 14px rgba(0,0,0,.4), 0 0 30px rgba(239,217,160,.25);
+  }
+  .names .event {
+    font-family: var(--font-caps);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .42em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* the letter */
+  .letter {
+    width: min(100%, 340px);
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.5), transparent 60%),
+      linear-gradient(180deg, #f7ecd6, #efdfc1);
+    color: var(--ink);
+    padding: 26px 24px 22px;
+    box-sizing: border-box;
+    box-shadow: 0 16px 34px rgba(0,0,0,.4), inset 0 0 0 1px rgba(140,106,43,.35), inset 0 0 0 5px rgba(255,250,235,.6), inset 0 0 0 6px rgba(140,106,43,.25);
+    display: grid;
+    gap: 14px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(12px) rotate(-.4deg);
+    transition: opacity 1s ease .1s, transform 1s ease .1s;
+  }
+  .letter.in { opacity: 1; transform: rotate(-.4deg); }
+  .letter .bismillah {
+    font-family: var(--font-arabic);
+    font-size: 24px;
+    line-height: 1.6;
+    color: var(--burgundy);
+    direction: rtl;
+  }
+  .letter .verse {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: #5a3b2e;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .letter .ref {
+    font-family: var(--font-caps);
+    font-size: 9.5px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+  }
+  .letter .rule {
+    width: 60px; height: 1px; margin: 2px auto;
+    background: linear-gradient(90deg, transparent, var(--gold-dark), transparent);
+  }
+  .letter .body {
+    font-family: var(--font-serif);
+    font-size: 16.5px;
+    line-height: 1.6;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .letter .body strong { font-weight: 600; color: var(--burgundy); }
+  .letter .sign {
+    font-family: var(--font-script);
+    font-size: 30px;
+    color: var(--burgundy);
+    line-height: 1.2;
+  }
+  .letter .from { font-family: var(--font-caps); font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: var(--burgundy); margin-top: -8px; }
+  .letter-mono { width: 40px; height: 40px; color: var(--burgundy); justify-self: center; opacity: .85; }
+
+  /* cameo lockets: each person cut out and set on the card's burgundy, gold halo and lattice */
+  .cameos { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; width: min(calc(100% - 28px), 330px); }
+  .cameo { display: grid; justify-items: center; gap: 10px; min-width: 0; opacity: 0; transform: scale(.7); transition: opacity 1s ease, transform 1.2s cubic-bezier(.2,.8,.2,1); }
+  .cameo.in { opacity: 1; transform: none; }
+  .locket {
+    position: relative;
+    width: 92%;
+    aspect-ratio: 1;
+    max-width: 100%;
+    border-radius: 50%;
+    padding: 5px;
+    box-sizing: border-box;
+    background: linear-gradient(135deg, #f1dca2, var(--gold) 40%, #a27d33 70%, #e9cf8c);
+    box-shadow: 0 12px 24px rgba(0,0,0,.45), 0 0 0 4px rgba(201,166,90,.22), 0 0 0 9px rgba(201,166,90,.08);
+  }
+  .locket::after {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0 70%, rgba(255,250,230,.8) 78%, transparent 86%);
+    -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+    mask: radial-gradient(circle closest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+    animation: ring 6s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes ring { to { transform: rotate(360deg); } }
+  .locket > .backdrop {
+    position: relative;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 2px rgba(255,245,215,.5);
+    background:
+      radial-gradient(55% 40% at 50% 30%, rgba(239,217,160,.42), rgba(201,166,90,.12) 50%, transparent 72%),
+      radial-gradient(120% 55% at 50% 112%, rgba(0,0,0,.5), transparent 62%),
+      repeating-linear-gradient(45deg, rgba(255,215,160,.06) 0 1px, transparent 1px 12px),
+      repeating-linear-gradient(-45deg, rgba(255,215,160,.06) 0 1px, transparent 1px 12px),
+      linear-gradient(180deg, #7a1a2c, var(--burgundy) 55%, var(--burgundy-deep));
+  }
+  .cut {
+    position: absolute;
+    left: 50%;
+    display: block;
+    max-width: none;
+    width: auto;
+    filter: sepia(.18) saturate(.95) contrast(1.03) drop-shadow(0 6px 10px rgba(0,0,0,.4));
+  }
+  .cut.bride { height: 330%; top: 10%; transform: translateX(-46%); }
+  .cut.groom { height: 245%; top: 5%; transform: translateX(-50%); }
+  .cameo-label { font-family: var(--font-caps); font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); }
+  .cameo-mono {
+    width: 84px; height: 84px;
+    color: var(--gold);
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.4));
+    opacity: 0;
+    transform: rotate(-30deg) scale(.6);
+    transition: opacity 1s ease, transform 1.2s cubic-bezier(.2,.8,.2,1);
+  }
+  .cameo-mono.in { opacity: 1; transform: none; }
+  @media (max-width: 360px) { .cameo-mono { width: 64px; height: 64px; } }
+
+  /* royal page border */
+  .royal {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    left: calc(10px + env(safe-area-inset-left, 0px));
+    right: calc(10px + env(safe-area-inset-right, 0px));
+    pointer-events: none;
+    border: 1px solid rgba(201,166,90,.75);
+    z-index: 2;
+  }
+  .royal::before {
+    content: "";
+    position: absolute; inset: 4px;
+    border: 1px solid rgba(201,166,90,.35);
+  }
+  .royal svg {
+    position: absolute;
+    width: 34px; height: 34px;
+    color: var(--gold);
+  }
+  .royal .c1 { left: -6px; top: -6px; }
+  .royal .c2 { right: -6px; top: -6px; transform: scaleX(-1); }
+  .royal .c3 { left: -6px; bottom: -6px; transform: scaleY(-1); }
+  .royal .c4 { right: -6px; bottom: -6px; transform: scale(-1); }
+  .date {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 14px;
+    width: min(100%, 300px);
+    font-family: var(--font-caps);
+    font-size: 13px;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--paper);
+    font-variant-numeric: tabular-nums;
+  }
+  .date .line { height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .date .line:last-child { background: linear-gradient(270deg, transparent, var(--gold)); }
+  .date .day { font-size: 36px; letter-spacing: .05em; font-weight: 600; color: var(--gold-light); }
+  .date .mid { display: grid; justify-items: center; gap: 2px; line-height: 1.1; }
+  .venue-name {
+    font-family: var(--font-caps);
+    font-style: normal;
+    font-size: 13px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+  .venue {
+    font-size: 16px;
+    font-style: italic;
+    color: rgba(243,230,207,.85);
+    text-align: center;
+    max-width: 30ch;
+    line-height: 1.5;
+  }
+  .cta {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .9s ease .2s, transform .9s ease .2s;
+    display: grid; gap: 14px; justify-items: center;
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    color: var(--gold-light);
+    text-decoration: none;
+    font-family: var(--font-caps);
+    font-size: 11px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, rgba(255,230,180,.08), rgba(0,0,0,.15));
+    transition: background .3s, transform .2s;
+  }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; }
+  .btn svg { width: 15px; height: 15px; flex: none; }
+  .btn-solid {
+    background: linear-gradient(135deg, #f1dca2, var(--gold) 50%, #a27d33);
+    color: var(--burgundy-deep);
+    border-color: var(--gold-light);
+    font-weight: 600;
+  }
+  .btn-solid:hover { background: linear-gradient(135deg, #f6e4b3, #d6b56a 50%, #b08a3d); }
+  .btn:hover { background: rgba(201,166,90,.18); }
+  .btn:active { transform: scale(.98); }
+  .btn:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+  .envelope-wrap:focus-visible { outline: 2px solid var(--burgundy); outline-offset: 8px; border-radius: 8px; }
+  .footnote {
+    font-family: var(--font-caps);
+    font-size: 10px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: rgba(239,217,160,.55);
+  }
+
+  /* sound toggle */
+  .sound {
+    position: fixed;
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    background: rgba(40, 6, 14, .55);
+    color: var(--gold-light);
+    display: grid; place-items: center;
+    cursor: pointer;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .6s ease, background .3s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .sound.show { opacity: 1; pointer-events: auto; }
+  .sound:hover { background: rgba(201,166,90,.22); }
+  .sound:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 3px; }
+  .sound svg { width: 20px; height: 20px; }
+  .sound .on, .sound .off { display: none; }
+  .sound[data-state="on"] .on { display: block; }
+  .sound[data-state="off"] .off { display: block; }
+  .sound .bars { display: flex; gap: 2px; align-items: flex-end; height: 14px; }
+  .sound .bars i {
+    width: 3px; background: currentColor; border-radius: 1px;
+    animation: eq 1s ease-in-out infinite;
+  }
+  .sound .bars i:nth-child(2) { animation-delay: .2s; }
+  .sound .bars i:nth-child(3) { animation-delay: .4s; }
+  @keyframes eq {
+    0%, 100% { height: 5px; }
+    50% { height: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .sound .bars i { animation: none; height: 9px; } }
+
+
+  /* one-screen layout: everything fits the phone's height without scrolling */
+  #scene-card .card { gap: clamp(6px, 1.4vh, 14px); padding-block: max(20px, 3vh) max(16px, 2.2vh); max-width: 400px; }
+  .bismillah-top .ar { font-size: clamp(18px, 2.8vh, 24px); line-height: 1.3; }
+  .bismillah-top .tr { font-size: 11.5px; max-width: 34ch; line-height: 1.3; }
+  .cameos { width: min(calc(100% - 44px), 280px); gap: 8px; }
+  .locket { width: 84%; padding: 4px; }
+  .cameo { gap: 5px; }
+  .cameo-label { font-size: 8px; }
+  .cameo-mono { width: clamp(46px, 7vh, 64px); height: clamp(46px, 7vh, 64px); }
+  .names { gap: 0; }
+  .names .event { font-size: 11px; letter-spacing: .38em; }
+  .names h1 { font-size: clamp(34px, 6vh, 50px); }
+  .letter { padding: clamp(10px, 1.6vh, 16px) 18px; gap: 0; width: min(calc(100% - 32px), 330px); }
+  .letter .body { font-size: clamp(13.5px, 1.95vh, 16px); line-height: 1.5; }
+  .cta { gap: clamp(7px, 1.3vh, 12px); }
+  .when { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; width: min(calc(100% - 28px), 330px);
+          font-family: var(--font-caps); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--paper); }
+  .when .side { border-top: 1px solid rgba(201,166,90,.7); border-bottom: 1px solid rgba(201,166,90,.7); padding: 6px 0; text-align: center; white-space: nowrap; }
+  .when .mid { display: grid; justify-items: center; line-height: 1.05; }
+  .when .num { font-size: clamp(26px, 4.2vh, 34px); font-weight: 600; color: var(--gold-light); letter-spacing: .04em; }
+  .when small { font-size: 8.5px; letter-spacing: .16em; margin-top: 2px; white-space: nowrap; }
+  .where { margin: 0; text-align: center; font-family: var(--font-caps); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-light); line-height: 1.6; }
+  .btn-row { gap: 8px; flex-wrap: nowrap; }
+  .btn { padding: 9px 16px; font-size: 10px; letter-spacing: .2em; }
+  @media (max-height: 660px) { .bismillah-top .tr { display: none; } .cameo-label { display: none; } }
+  @media (max-height: 700px) {
+    .frame { width: min(62vw, 240px); }
+    .names h1 { font-size: clamp(38px, 10vw, 48px); }
+    .card { gap: 12px; }
+  }
+
+  /* responsive: envelope scales with the screen height; tablets and desktops get a roomier card;
+     phones turned sideways split the card into two columns; very narrow phones tighten up */
+  .envelope { width: min(78vw, 330px, calc(50vh * 1.42)); }
+  @media (max-height: 560px) {
+    .envelope-wrap { gap: 10px; }
+    .env-head .big { font-size: clamp(26px, 8vh, 40px); }
+    .env-head .small, .env-foot, .tap-hint { font-size: 9.5px; }
+  }
+  @media (min-width: 700px) and (min-height: 760px) {
+    #scene-card .card { max-width: 480px; gap: clamp(10px, 1.6vh, 18px); }
+    .bismillah-top .ar { font-size: 28px; }
+    .bismillah-top .tr { font-size: 13px; }
+    .cameos { width: 330px; }
+    .cameo-mono { width: 72px; height: 72px; }
+    .names .event { font-size: 12.5px; }
+    .names h1 { font-size: clamp(46px, 5.6vh, 62px); }
+    .letter { width: 400px; padding: 18px 24px; }
+    .letter .body { font-size: 17px; }
+    .when { width: 370px; font-size: 12px; }
+    .when .num { font-size: 40px; }
+    .when small { font-size: 9.5px; }
+    .where { font-size: 12px; }
+    .btn { padding: 11px 22px; font-size: 11px; }
+  }
+  @media (max-width: 350px) {
+    .btn-row { flex-wrap: wrap; justify-content: center; }
+    .btn { padding: 8px 12px; letter-spacing: .14em; }
+    .when { font-size: 9.5px; letter-spacing: .08em; gap: 6px; width: calc(100% - 20px); }
+    .when small { letter-spacing: .1em; }
+    .names h1 { font-size: 32px; }
+    .letter { width: calc(100% - 20px); padding: 10px 14px; }
+  }
+  @media (orientation: landscape) and (max-height: 560px) {
+    #scene-card .card {
+      max-width: 820px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas: "bis letter" "cam letter" "names cta";
+      align-items: center; column-gap: 28px; row-gap: 6px;
+      padding-block: 18px;
+    }
+    #scene-card .bismillah-top { grid-area: bis; }
+    #scene-card .cameos { grid-area: cam; }
+    #scene-card .names { grid-area: names; }
+    #scene-card .letter { grid-area: letter; align-self: end; width: 100%; }
+    #scene-card .cta { grid-area: cta; align-self: start; }
+    .bismillah-top .ar { font-size: 18px; }
+    .bismillah-top .tr, .cameo-label { display: none; }
+    .cameos { width: min(100%, 240px); }
+    .cameo-mono { width: 48px; height: 48px; }
+    .names h1 { font-size: clamp(28px, 8.5vh, 42px); }
+    .letter .body { font-size: 13.5px; }
+    .when { width: 100%; }
+  }
+  @media (min-width: 700px) and (min-height: 960px) {
+    #scene-card .card { max-width: 580px; gap: 20px; }
+    .bismillah-top .ar { font-size: 34px; }
+    .bismillah-top .tr { font-size: 15px; }
+    .cameos { width: 420px; }
+    .cameo-label { font-size: 10px; }
+    .cameo-mono { width: 92px; height: 92px; }
+    .names .event { font-size: 14px; }
+    .names h1 { font-size: 74px; }
+    .letter { width: 480px; padding: 22px 30px; }
+    .letter .body { font-size: 20px; }
+    .when { width: 440px; font-size: 13.5px; }
+    .when .num { font-size: 50px; }
+    .when small { font-size: 11px; }
+    .where { font-size: 13.5px; }
+    .btn { padding: 13px 26px; font-size: 12px; }
+    .env-head .big { font-size: 64px; }
+    .envelope { width: min(78vw, 420px, calc(50vh * 1.42)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .envelope { animation: none; }
+    .scene, .frame, .strip, .reveal, .names, .cta, .letter, .bismillah-top, .env-flap, .env-card { transition: none !important; }
+    .frame-outer::after { animation: none; }
+    .cameo, .cameo-mono { transition: none !important; }
+    .locket::after { animation: none; }
+  }
+  .yt-bgm { position: fixed; left: 0; bottom: 0; width: 2px; height: 2px; border: 0; opacity: .01; pointer-events: none; z-index: -1; }
+</style>
+
+<meta name="description" content="With the blessings of Allah, Uvais &amp; Family invite you to the Wedding Reception of Uvais and Hanna. Sunday 13 December 2026, 6 – 9 pm, Alba Arcade Auditorium, Parambil Bazar, Kozhikode.">
+<meta property="og:title" content="Uvais &amp; Hanna · Wedding Reception">
+<meta property="og:description" content="With the blessings of Allah, Uvais &amp; Family invite you to the Wedding Reception of Uvais and Hanna. Sunday 13 December 2026, 6 – 9 pm, Alba Arcade Auditorium, Parambil Bazar, Kozhikode.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#5c0f1f">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- HU mark, drawn as filled outlines: a round U (outer, heavier) holds the H (inner stems and crossbar).
+         Arm tops flare like engraved capitals; the U slims at its base; the H strokes taper into a small gem; light crossbar; star above. -->
+    <g id="hu" stroke="none"><path d="M53.40 40.00 L53.80 42.00 L54.12 44.00 L54.38 46.00 L54.56 48.00 L54.66 50.00 L54.70 52.00 L54.70 54.00 L54.70 56.00 L54.70 58.00 L54.70 60.00 L54.70 62.00 L54.70 64.00 L54.70 66.00 L54.70 68.00 L54.70 70.00 L54.70 72.00 L54.70 74.00 L54.70 76.00 L54.70 78.00 L54.70 80.00 L54.70 82.00 L54.70 84.00 L54.70 86.00 L54.70 88.00 L54.70 90.00 L54.70 92.00 L54.70 94.00 L54.70 96.00 L54.70 98.00 L54.70 100.00 L54.70 102.00 L54.70 104.00 L54.70 106.00 L54.70 108.00 L54.70 110.00 L54.70 112.00 L54.76 114.37 L54.95 116.73 L55.27 119.08 L55.72 121.41 L56.30 123.71 L57.00 125.97 L57.83 128.19 L58.77 130.36 L59.84 132.46 L61.01 134.51 L62.30 136.48 L63.69 138.38 L65.18 140.20 L66.76 141.93 L68.43 143.57 L70.18 145.12 L72.00 146.57 L73.90 147.93 L75.86 149.18 L77.88 150.32 L79.95 151.36 L82.06 152.29 L84.22 153.12 L86.41 153.83 L88.63 154.44 L90.87 154.93 L93.14 155.32 L95.42 155.59 L97.71 155.76 L100.00 155.81 L102.29 155.76 L104.58 155.59 L106.86 155.32 L109.13 154.93 L111.37 154.44 L113.59 153.83 L115.78 153.12 L117.94 152.29 L120.05 151.36 L122.12 150.32 L124.14 149.18 L126.10 147.93 L128.00 146.57 L129.82 145.12 L131.57 143.57 L133.24 141.93 L134.82 140.20 L136.31 138.38 L137.70 136.48 L138.99 134.51 L140.16 132.46 L141.23 130.36 L142.17 128.19 L143.00 125.97 L143.70 123.71 L144.28 121.41 L144.73 119.08 L145.05 116.73 L145.24 114.37 L145.30 112.00 L145.30 110.00 L145.30 108.00 L145.30 106.00 L145.30 104.00 L145.30 102.00 L145.30 100.00 L145.30 98.00 L145.30 96.00 L145.30 94.00 L145.30 92.00 L145.30 90.00 L145.30 88.00 L145.30 86.00 L145.30 84.00 L145.30 82.00 L145.30 80.00 L145.30 78.00 L145.30 76.00 L145.30 74.00 L145.30 72.00 L145.30 70.00 L145.30 68.00 L145.30 66.00 L145.30 64.00 L145.30 62.00 L145.30 60.00 L145.30 58.00 L145.30 56.00 L145.30 54.00 L145.30 52.00 L145.34 50.00 L145.44 48.00 L145.62 46.00 L145.88 44.00 L146.20 42.00 L146.60 40.00 L137.40 40.00 L137.80 42.00 L138.12 44.00 L138.38 46.00 L138.56 48.00 L138.66 50.00 L138.70 52.00 L138.70 54.00 L138.70 56.00 L138.70 58.00 L138.70 60.00 L138.70 62.00 L138.70 64.00 L138.70 66.00 L138.70 68.00 L138.70 70.00 L138.70 72.00 L138.70 74.00 L138.70 76.00 L138.70 78.00 L138.70 80.00 L138.70 82.00 L138.70 84.00 L138.70 86.00 L138.70 88.00 L138.70 90.00 L138.70 92.00 L138.70 94.00 L138.70 96.00 L138.70 98.00 L138.70 100.00 L138.70 102.00 L138.70 104.00 L138.70 106.00 L138.70 108.00 L138.70 110.00 L138.70 112.00 L138.65 114.03 L138.49 116.05 L138.24 118.06 L137.89 120.05 L137.44 122.03 L136.89 123.99 L136.25 125.91 L135.51 127.81 L134.68 129.67 L133.76 131.49 L132.75 133.27 L131.64 134.99 L130.46 136.66 L129.18 138.27 L127.82 139.82 L126.38 141.30 L124.86 142.71 L123.27 144.03 L121.61 145.27 L119.88 146.43 L118.08 147.48 L116.23 148.45 L114.32 149.31 L112.37 150.06 L110.37 150.70 L108.34 151.23 L106.28 151.65 L104.20 151.95 L102.10 152.13 L100.00 152.19 L97.90 152.13 L95.80 151.95 L93.72 151.65 L91.66 151.23 L89.63 150.70 L87.63 150.06 L85.68 149.31 L83.77 148.45 L81.92 147.48 L80.12 146.43 L78.39 145.27 L76.73 144.03 L75.14 142.71 L73.62 141.30 L72.18 139.82 L70.82 138.27 L69.54 136.66 L68.36 134.99 L67.25 133.27 L66.24 131.49 L65.32 129.67 L64.49 127.81 L63.75 125.91 L63.11 123.99 L62.56 122.03 L62.11 120.05 L61.76 118.06 L61.51 116.05 L61.35 114.03 L61.30 112.00 L61.30 110.00 L61.30 108.00 L61.30 106.00 L61.30 104.00 L61.30 102.00 L61.30 100.00 L61.30 98.00 L61.30 96.00 L61.30 94.00 L61.30 92.00 L61.30 90.00 L61.30 88.00 L61.30 86.00 L61.30 84.00 L61.30 82.00 L61.30 80.00 L61.30 78.00 L61.30 76.00 L61.30 74.00 L61.30 72.00 L61.30 70.00 L61.30 68.00 L61.30 66.00 L61.30 64.00 L61.30 62.00 L61.30 60.00 L61.30 58.00 L61.30 56.00 L61.30 54.00 L61.30 52.00 L61.34 50.00 L61.44 48.00 L61.62 46.00 L61.88 44.00 L62.20 42.00 L62.60 40.00 Z"/><path d="M74.70 40.00 L74.97 42.00 L75.20 44.00 L75.38 46.00 L75.50 48.00 L75.58 50.00 L75.60 52.00 L75.60 54.00 L75.60 56.00 L75.60 58.00 L75.60 60.00 L75.60 62.00 L75.60 64.00 L75.60 66.00 L75.60 68.00 L75.60 70.00 L75.60 72.00 L75.60 74.00 L75.60 76.00 L75.60 78.00 L75.60 80.00 L75.60 82.00 L75.60 84.00 L75.60 86.00 L75.60 88.00 L75.60 90.00 L75.60 92.00 L75.60 94.00 L75.60 96.00 L75.60 98.00 L75.60 100.00 L75.60 102.00 L75.60 104.00 L75.60 106.00 L75.60 108.00 L75.60 110.00 L75.60 112.00 L75.61 112.65 L75.63 113.29 L75.68 113.94 L75.74 114.58 L75.81 115.23 L75.91 115.87 L76.02 116.51 L76.15 117.14 L76.29 117.77 L76.45 118.40 L76.63 119.02 L76.83 119.64 L77.04 120.25 L77.26 120.86 L77.51 121.46 L77.77 122.05 L78.04 122.63 L78.33 123.21 L78.63 123.78 L78.98 124.33 L79.40 124.83 L79.83 125.32 L80.27 125.80 L80.72 126.26 L81.18 126.70 L81.65 127.14 L82.13 127.56 L82.61 127.97 L83.10 128.36 L83.61 128.74 L84.11 129.11 L84.63 129.46 L85.15 129.80 L85.68 130.12 L86.21 130.43 L86.75 130.73 L87.29 131.01 L87.84 131.28 L88.39 131.53 L88.95 131.78 L89.51 132.00 L90.07 132.22 L90.63 132.42 L91.20 132.61 L91.77 132.79 L92.34 132.95 L92.91 133.11 L93.49 133.25 L94.06 133.38 L94.64 133.52 L94.72 133.18 L94.17 133.01 L93.62 132.82 L93.08 132.61 L92.55 132.37 L92.03 132.12 L91.52 131.86 L91.02 131.57 L90.53 131.27 L90.05 130.96 L89.59 130.63 L89.13 130.29 L88.69 129.94 L88.26 129.57 L87.84 129.19 L87.43 128.80 L87.04 128.40 L86.66 127.99 L86.30 127.57 L85.95 127.14 L85.61 126.70 L85.29 126.25 L84.98 125.79 L84.69 125.33 L84.41 124.86 L84.15 124.38 L83.90 123.90 L83.67 123.42 L83.46 122.93 L83.26 122.43 L83.07 121.93 L82.84 121.47 L82.59 121.01 L82.36 120.54 L82.14 120.07 L81.93 119.60 L81.74 119.11 L81.55 118.63 L81.38 118.13 L81.23 117.64 L81.09 117.14 L80.96 116.64 L80.84 116.13 L80.74 115.62 L80.65 115.11 L80.57 114.59 L80.51 114.08 L80.46 113.56 L80.43 113.04 L80.41 112.52 L80.40 112.00 L80.40 110.00 L80.40 108.00 L80.40 106.00 L80.40 104.00 L80.40 102.00 L80.40 100.00 L80.40 98.00 L80.40 96.00 L80.40 94.00 L80.40 92.00 L80.40 90.00 L80.40 88.00 L80.40 86.00 L80.40 84.00 L80.40 82.00 L80.40 80.00 L80.40 78.00 L80.40 76.00 L80.40 74.00 L80.40 72.00 L80.40 70.00 L80.40 68.00 L80.40 66.00 L80.40 64.00 L80.40 62.00 L80.40 60.00 L80.40 58.00 L80.40 56.00 L80.40 54.00 L80.40 52.00 L80.42 50.00 L80.50 48.00 L80.62 46.00 L80.80 44.00 L81.03 42.00 L81.30 40.00 Z"/><path d="M125.30 40.00 L125.03 42.00 L124.80 44.00 L124.62 46.00 L124.50 48.00 L124.42 50.00 L124.40 52.00 L124.40 54.00 L124.40 56.00 L124.40 58.00 L124.40 60.00 L124.40 62.00 L124.40 64.00 L124.40 66.00 L124.40 68.00 L124.40 70.00 L124.40 72.00 L124.40 74.00 L124.40 76.00 L124.40 78.00 L124.40 80.00 L124.40 82.00 L124.40 84.00 L124.40 86.00 L124.40 88.00 L124.40 90.00 L124.40 92.00 L124.40 94.00 L124.40 96.00 L124.40 98.00 L124.40 100.00 L124.40 102.00 L124.40 104.00 L124.40 106.00 L124.40 108.00 L124.40 110.00 L124.40 112.00 L124.39 112.65 L124.37 113.29 L124.32 113.94 L124.26 114.58 L124.19 115.23 L124.09 115.87 L123.98 116.51 L123.85 117.14 L123.71 117.77 L123.55 118.40 L123.37 119.02 L123.17 119.64 L122.96 120.25 L122.74 120.86 L122.49 121.46 L122.23 122.05 L121.96 122.63 L121.67 123.21 L121.37 123.78 L121.02 124.33 L120.60 124.83 L120.17 125.32 L119.73 125.80 L119.28 126.26 L118.82 126.70 L118.35 127.14 L117.87 127.56 L117.39 127.97 L116.90 128.36 L116.39 128.74 L115.89 129.11 L115.37 129.46 L114.85 129.80 L114.32 130.12 L113.79 130.43 L113.25 130.73 L112.71 131.01 L112.16 131.28 L111.61 131.53 L111.05 131.78 L110.49 132.00 L109.93 132.22 L109.37 132.42 L108.80 132.61 L108.23 132.79 L107.66 132.95 L107.09 133.11 L106.51 133.25 L105.94 133.38 L105.36 133.52 L105.28 133.18 L105.83 133.01 L106.38 132.82 L106.92 132.61 L107.45 132.37 L107.97 132.12 L108.48 131.86 L108.98 131.57 L109.47 131.27 L109.95 130.96 L110.41 130.63 L110.87 130.29 L111.31 129.94 L111.74 129.57 L112.16 129.19 L112.57 128.80 L112.96 128.40 L113.34 127.99 L113.70 127.57 L114.05 127.14 L114.39 126.70 L114.71 126.25 L115.02 125.79 L115.31 125.33 L115.59 124.86 L115.85 124.38 L116.10 123.90 L116.33 123.42 L116.54 122.93 L116.74 122.43 L116.93 121.93 L117.16 121.47 L117.41 121.01 L117.64 120.54 L117.86 120.07 L118.07 119.60 L118.26 119.11 L118.45 118.63 L118.62 118.13 L118.77 117.64 L118.91 117.14 L119.04 116.64 L119.16 116.13 L119.26 115.62 L119.35 115.11 L119.43 114.59 L119.49 114.08 L119.54 113.56 L119.57 113.04 L119.59 112.52 L119.60 112.00 L119.60 110.00 L119.60 108.00 L119.60 106.00 L119.60 104.00 L119.60 102.00 L119.60 100.00 L119.60 98.00 L119.60 96.00 L119.60 94.00 L119.60 92.00 L119.60 90.00 L119.60 88.00 L119.60 86.00 L119.60 84.00 L119.60 82.00 L119.60 80.00 L119.60 78.00 L119.60 76.00 L119.60 74.00 L119.60 72.00 L119.60 70.00 L119.60 68.00 L119.60 66.00 L119.60 64.00 L119.60 62.00 L119.60 60.00 L119.60 58.00 L119.60 56.00 L119.60 54.00 L119.60 52.00 L119.58 50.00 L119.50 48.00 L119.38 46.00 L119.20 44.00 L118.97 42.00 L118.70 40.00 Z"/><path d="M78.00 88.56 H122.00 V91.44 H78.00 Z"/><path d="M100 130.96 L103.90 137.00 L100 143.04 L96.10 137.00 Z"/><path d="M100.00 55.40 L100.73 63.24 L103.89 61.11 L101.76 64.27 L109.60 65.00 L101.76 65.73 L103.89 68.89 L100.73 66.76 L100.00 74.60 L99.27 66.76 L96.11 68.89 L98.24 65.73 L90.40 65.00 L98.24 64.27 L96.11 61.11 L99.27 63.24 Z"/></g>
+    <!-- ringed version for round placements: wax seal, between the lockets, under the letter -->
+    <symbol id="mono" viewBox="0 0 200 200">
+      <g fill="none" stroke="currentColor">
+        <circle cx="100" cy="100" r="94" stroke-width="2.2"/>
+        <circle cx="100" cy="100" r="87" stroke-width="0.9"/>
+      </g>
+      <g stroke="currentColor" fill="currentColor"><use href="#hu" transform="translate(100 100) scale(.92) translate(-100 -98)"/></g>
+    </symbol>
+    <symbol id="corner" viewBox="0 0 56 56">
+      <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <path d="M8 48 C8 20, 20 8, 48 8"/>
+        <path d="M14 40 C16 24, 24 16, 40 14"/>
+        <path d="M22 22 c-6 0 -8 6 -4 9 c4 3 9 -2 9 -6"/>
+      </g>
+      <circle cx="8" cy="48" r="3" fill="currentColor"/>
+      <circle cx="48" cy="8" r="3" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="stage">
+  <!-- Scene 1: the envelope -->
+  <section class="scene" id="scene-envelope" aria-label="Sealed invitation">
+    <div class="envelope-wrap" id="envelope-wrap" role="button" tabindex="0" aria-label="Open the invitation">
+      <div class="env-head">
+        <div class="small">You are warmly invited</div>
+        <div class="big">Uvais &amp; Hanna</div>
+      </div>
+      <div class="envelope" id="envelope">
+        <div class="env-body">
+          <div class="env-card">HU</div>
+          <div class="env-left"></div>
+          <div class="env-right"></div>
+          <div class="env-bottom"></div>
+        </div>
+        <div class="env-flap"></div>
+        <div class="env-seal" aria-hidden="true"><svg><use href="#mono"/></svg></div>
+      </div>
+      <div class="tap-hint">Tap to open</div>
+      <div class="env-foot">Wedding Reception · 13 December 2026</div>
+    </div>
+  </section>
+
+  <button class="sound" id="sound" type="button" data-state="on" aria-label="Mute music" aria-pressed="false">
+    <span class="on bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 9v6h4l5 4V5L8 9H4z"/>
+      <path d="M16 9l5 6M21 9l-5 6"/>
+    </svg>
+  </button>
+
+  <!-- Scene 2: the photobooth card -->
+  <section class="scene" id="scene-card" hidden aria-label="Wedding reception invitation">
+    <canvas class="sparkles" id="sparkles" aria-hidden="true"></canvas>
+    <div class="royal" aria-hidden="true">
+      <svg class="c1"><use href="#corner"/></svg>
+      <svg class="c2"><use href="#corner"/></svg>
+      <svg class="c3"><use href="#corner"/></svg>
+      <svg class="c4"><use href="#corner"/></svg>
+    </div>
+    <div class="card">
+      <div class="bismillah-top reveal" id="bismillah-top">
+        <div class="ar" lang="ar">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+        <div class="tr">In the name of Allah, the Most Gracious, the Most Merciful</div>
+      </div>
+      <div class="reveal" id="eyebrow" hidden></div>
+
+      <div class="cameos" aria-label="Portraits of Uvais and Hanna">
+        <div class="cameo" id="cameo-groom">
+          <div class="locket"><div class="backdrop"><img class="cut groom" src="photos/groom-striped-cut.png" alt="Uvais"></div></div>
+          <div class="cameo-label">The groom</div>
+        </div>
+        <svg class="cameo-mono" id="cameo-mono" aria-hidden="true"><use href="#mono"/></svg>
+        <div class="cameo" id="cameo-bride">
+          <div class="locket"><div class="backdrop"><img class="cut bride" src="photos/bride-cut.png" alt="Hanna"></div></div>
+          <div class="cameo-label">The bride</div>
+        </div>
+      </div>
+
+      <div class="names" id="names">
+        <div class="event">Wedding Reception</div>
+        <h1>Uvais &amp; Hanna</h1>
+      </div>
+
+      <div class="letter" id="letter">
+        <p class="body" id="letter-body">With the blessings of Allah, <strong>Uvais &amp; Family</strong> warmly invite you to the Wedding Reception of Uvais and Hanna. Your presence and du’as would make the day complete.</p>
+      </div>
+
+      <div class="cta" id="cta">
+        <div class="when">
+          <span class="side">Sunday</span>
+          <span class="mid"><span class="num">13</span><small>December 2026</small></span>
+          <span class="side">6 – 9 pm</span>
+        </div>
+        <p class="where">Alba Arcade Auditorium<br>Parambil Bazar, Kozhikode</p>
+        <div class="btn-row">
+          <a class="btn btn-solid" id="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Alba%20Arcade%20Auditorium%2C%20Parambil%20Bazar%2C%20Kozhikode" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+            Location
+          </a>
+          <a class="btn" id="cal-link" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+            Calendar
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  // Optional: path to an mp3 published next to this page (e.g. 'music.mp3').
+  // Empty plays the built-in music-box piece instead.
+  var TRACK_URL = '';
+  // Background music from YouTube (video id). The built-in music box plays if YouTube can't start.
+  var YOUTUBE_ID = '_hoDOkLm38A';
+  // Optional: paste the venue's exact Google Maps share link here. Empty searches Maps by name.
+  var MAP_URL = '';
+
+  /* ---------- Music ---------- */
+  var music = (function () {
+    var ctx, master, wet, timer, nextTime, barIndex = 0, started = false, on = true, audioEl, noiseBuf;
+    var yt = null, ytReady = false, ytPlaying = false, ytFailed = false, ytPending = false;
+    function ytPost(func, args) {
+      if (!yt || !yt.contentWindow) return;
+      yt.contentWindow.postMessage(JSON.stringify({ event: 'command', func: func, args: args || [] }), '*');
+    }
+    function ytPlay() { ytPost('unMute'); ytPost('setVolume', [70]); ytPost('playVideo'); }
+    function ytSetup() {
+      if (!YOUTUBE_ID) return;
+      // Pages that forbid YouTube frames (such as the claude.ai preview) fall back to the music box right away.
+      document.addEventListener('securitypolicyviolation', function (e) {
+        if (/youtube/.test(e.blockedURI || '')) { ytFailed = true; ytPost = function () {}; }
+      });
+      yt = document.createElement('iframe');
+      yt.className = 'yt-bgm';
+      yt.title = 'Background music';
+      yt.setAttribute('aria-hidden', 'true');
+      yt.tabIndex = -1;
+      yt.allow = 'autoplay; encrypted-media';
+      yt.src = 'https://www.youtube.com/embed/' + YOUTUBE_ID + '?enablejsapi=1&controls=0&disablekb=1&fs=0&rel=0&playsinline=1&loop=1&playlist=' + YOUTUBE_ID;
+      yt.addEventListener('load', function () {
+        ytReady = true;
+        yt.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'bgm' }), '*');
+        if (ytPending && on) ytPlay();
+      });
+      window.addEventListener('message', function (e) {
+        if (!/youtube(-nocookie)?\.com$/.test((e.origin || '').replace(/^https?:\/\//, ''))) return;
+        var d; try { d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch (x) { return; }
+        var st = d && d.info && typeof d.info === 'object' ? d.info.playerState : (d && d.event === 'onStateChange' ? d.info : undefined);
+        if (st === 1) ytPlaying = true;
+        if (d && d.event === 'onError') ytFallback();
+      });
+      document.body.appendChild(yt);
+    }
+    function ytFallback() {
+      if (ytFailed) return;
+      ytFailed = true; ytPost('pauseVideo');
+      try { startSynth(); if (!on) setOn(false); } catch (e) {}
+    }
+    ytSetup();
+    // Original upbeat piece in D major, 112 bpm. Two bars of harp, then bass, frame drum, claps,
+    // tambourine and a bell melody over I-V-vi-IV / I-V-IV-V.
+    var EIGHTH = 60 / 112 / 2;
+    var CHORDS = { D: [50, 57, 62, 66], A: [45, 52, 57, 61], Bm: [47, 54, 59, 62], G: [43, 50, 55, 59] };
+    var PROG = ['D', 'A', 'Bm', 'G', 'D', 'A', 'G', 'A'];
+    var MEL = [
+      [[0, 78, 2], [2, 81, 1], [3, 78, 1], [4, 76, 2], [6, 74, 2]],
+      [[0, 76, 1], [1, 78, 1], [2, 76, 2], [4, 73, 2], [6, 69, 2]],
+      [[0, 74, 2], [2, 78, 1], [3, 83, 2], [5, 81, 1], [6, 78, 2]],
+      [[0, 79, 2], [2, 78, 1], [3, 76, 1], [4, 74, 2], [6, 76, 2]],
+      [[0, 81, 1], [1, 81, 1], [2, 83, 1], [3, 81, 1], [4, 78, 2], [6, 74, 2]],
+      [[0, 85, 2], [2, 83, 1], [3, 81, 1], [4, 76, 2], [6, 73, 2]],
+      [[0, 83, 1], [1, 81, 1], [2, 79, 2], [4, 78, 1], [5, 76, 1], [6, 79, 2]],
+      [[0, 78, 2], [2, 76, 2], [4, 74, 4]]
+    ];
+
+    function freq(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+
+    function impulse(seconds) {
+      var rate = ctx.sampleRate, len = Math.floor(rate * seconds);
+      var buf = ctx.createBuffer(2, len, rate);
+      for (var c = 0; c < 2; c++) {
+        var d = buf.getChannelData(c);
+        for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2);
+      }
+      return buf;
+    }
+
+    function env(g, t, peak, attack, decay) {
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(peak, t + attack);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + attack + decay);
+    }
+
+    function tone(midi, t, dur, vol, type, partials, send) {
+      var g = ctx.createGain();
+      env(g, t, vol, 0.006, dur);
+      g.connect(master); if (send) g.connect(wet);
+      partials.forEach(function (p) {
+        var o = ctx.createOscillator(), og = ctx.createGain();
+        o.type = type; o.frequency.value = freq(midi) * p[0]; og.gain.value = p[1];
+        o.connect(og); og.connect(g); o.start(t); o.stop(t + dur + 0.1);
+      });
+    }
+    function bell(m, t, d, v) { tone(m, t, d * 1.6 + 0.45, v, 'sine', [[1, 1], [2, 0.35], [3, 0.12], [4.01, 0.05]], true); }
+    function pluck(m, t, v) { tone(m, t, 0.42, v, 'triangle', [[1, 1], [2, 0.25]], true); }
+    function bass(m, t, d, v) { tone(m, t, d, v, 'sine', [[1, 1], [2, 0.3]], false); }
+
+    function drum(t, v) {
+      var o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.18);
+      env(g, t, v, 0.003, 0.22); o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.3);
+    }
+    function noise(t, v, dur, type, f, q) {
+      var s = ctx.createBufferSource(), fl = ctx.createBiquadFilter(), g = ctx.createGain();
+      s.buffer = noiseBuf; fl.type = type; fl.frequency.value = f; fl.Q.value = q || 1;
+      env(g, t, v, 0.002, dur); s.connect(fl); fl.connect(g); g.connect(master);
+      s.start(t); s.stop(t + dur + 0.05);
+    }
+    function clap(t, v) { noise(t, v, 0.12, 'bandpass', 1500, 0.8); noise(t + 0.012, v * 0.7, 0.1, 'bandpass', 1200, 0.8); }
+    function tamb(t, v) { noise(t, v, 0.06, 'highpass', 7000, 0.7); }
+
+    function scheduleBar(t) {
+      var intro = barIndex < 2;
+      var i = intro ? barIndex : (barIndex - 2) % 8;
+      var ch = CHORDS[PROG[i]], E = EIGHTH;
+      var arp = [ch[1], ch[2], ch[3], ch[2], ch[1], ch[2], ch[3], ch[2]];
+      arp.forEach(function (m, k) { pluck(m + 12, t + k * E, k % 2 ? 0.05 : 0.08); });
+      if (!intro) {
+        bass(ch[0], t, E * 1.6, 0.22); bass(ch[0], t + 3 * E, E * 0.8, 0.16);
+        bass(ch[1], t + 4 * E, E * 1.6, 0.2); bass(ch[0] + 12, t + 6 * E, E * 0.8, 0.14); bass(ch[1], t + 7 * E, E * 0.8, 0.14);
+        drum(t, 0.5); drum(t + 3 * E, 0.32); drum(t + 4 * E, 0.45);
+        clap(t + 2 * E, 0.18); clap(t + 6 * E, 0.18);
+        for (var k = 1; k < 8; k += 2) tamb(t + k * E, k === 7 ? 0.09 : 0.06);
+        MEL[i].forEach(function (n) { bell(n[1], t + n[0] * E, n[2] * E, 0.16); });
+      }
+      barIndex++;
+      return t + 8 * E;
+    }
+
+    function tick() {
+      while (nextTime < ctx.currentTime + 0.6) nextTime = scheduleBar(nextTime);
+    }
+
+    function startSynth() {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      ctx = new AC();
+      noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      var nd = noiseBuf.getChannelData(0);
+      for (var ni = 0; ni < nd.length; ni++) nd[ni] = Math.random() * 2 - 1;
+      master = ctx.createGain();
+      master.gain.value = 0;
+      master.connect(ctx.destination);
+      var conv = ctx.createConvolver();
+      conv.buffer = impulse(1.8);
+      wet = ctx.createGain();
+      wet.gain.value = 0.25;
+      wet.connect(conv); conv.connect(master);
+      nextTime = ctx.currentTime + 0.1;
+      tick();
+      timer = setInterval(tick, 120);
+      master.gain.linearRampToValueAtTime(0.85, ctx.currentTime + 2.5);
+      return true;
+    }
+
+    function startTrack() {
+      audioEl = new Audio(TRACK_URL);
+      audioEl.loop = true;
+      audioEl.volume = 0.6;
+      var p = audioEl.play();
+      if (p && p.catch) p.catch(function () { audioEl = null; startSynth(); });
+      return true;
+    }
+
+    function start() {
+      if (started) return;
+      started = true;
+      if (yt && !ytFailed) {
+        if (ytReady) ytPlay(); else ytPending = true;
+        setTimeout(function () { if (!ytPlaying) ytFallback(); }, 4000);
+        return;
+      }
+      try { TRACK_URL ? startTrack() : startSynth(); } catch (e) { started = false; }
+    }
+
+    function setOn(v) {
+      on = v;
+      if (yt && !ytFailed) { if (v) ytPlay(); else ytPost('pauseVideo'); return; }
+      if (audioEl) { v ? audioEl.play() : audioEl.pause(); return; }
+      if (!ctx) return;
+      if (v) ctx.resume();
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setTargetAtTime(v ? 0.85 : 0, ctx.currentTime, 0.25);
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      if (yt && !ytFailed && started) { if (document.hidden) ytPost('pauseVideo'); else if (on) ytPlay(); return; }
+      if (!ctx) return;
+      if (document.hidden) ctx.suspend(); else if (on) ctx.resume();
+    });
+
+    return { start: start, setOn: setOn, isOn: function () { return on; } };
+  })();
+
+  var soundBtn = document.getElementById('sound');
+  soundBtn.addEventListener('click', function () {
+    var next = !music.isOn();
+    music.setOn(next);
+    soundBtn.dataset.state = next ? 'on' : 'off';
+    soundBtn.setAttribute('aria-label', next ? 'Mute music' : 'Play music');
+    soundBtn.setAttribute('aria-pressed', next ? 'false' : 'true');
+  });
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var opened = false;
+
+  function calendarLink() {
+    var text = encodeURIComponent('Wedding Reception of Uvais & Hanna');
+    var details = encodeURIComponent('Wedding reception of Uvais & Hanna at Alba Arcade Auditorium, Parambil Bazar, Kozhikode, 6:00 pm to 9:00 pm.');
+    var location = encodeURIComponent('Alba Arcade Auditorium, Parambil Bazar, Kozhikode');
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + text +
+           '&dates=20261213T180000/20261213T210000&details=' + details + '&location=' + location;
+  }
+
+  function showCard() {
+    var env = document.getElementById('scene-envelope');
+    var card = document.getElementById('scene-card');
+    env.classList.add('fade');
+    card.hidden = false;
+    requestAnimationFrame(function () {
+      card.classList.add('show');
+      var t = reduced ? 0 : 1;
+      setTimeout(function () { document.getElementById('bismillah-top').classList.add('in'); }, 300 * t);
+      setTimeout(function () { document.getElementById('eyebrow').classList.add('in'); }, 600 * t);
+      setTimeout(function () { document.getElementById('cameo-bride').classList.add('in'); }, 900 * t);
+      setTimeout(function () { document.getElementById('cameo-mono').classList.add('in'); }, 1300 * t);
+      setTimeout(function () { document.getElementById('cameo-groom').classList.add('in'); }, 1700 * t);
+      setTimeout(function () { document.getElementById('names').classList.add('in'); }, 2500 * t);
+      setTimeout(function () { document.getElementById('letter').classList.add('in'); }, 3200 * t);
+      setTimeout(function () { document.getElementById('cta').classList.add('in'); }, 3900 * t);
+      setTimeout(function () { env.hidden = true; }, 1300 * t);
+      if (!reduced) startSparkles();
+    });
+  }
+
+  function startSparkles() {
+    var c = document.getElementById('sparkles'), g = c.getContext('2d');
+    var scene = document.getElementById('scene-card'), pts = [], W, H;
+    function size() {
+      W = c.width = scene.clientWidth; H = c.height = scene.clientHeight;
+    }
+    size();
+    window.addEventListener('resize', size);
+    for (var i = 0; i < 46; i++) pts.push({
+      x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.6,
+      s: .00025 + Math.random() * .0005, p: Math.random() * 6.28, d: Math.random() * 6.28
+    });
+    function draw() {
+      if (document.hidden) { requestAnimationFrame(draw); return; }
+      g.clearRect(0, 0, W, H);
+      var now = performance.now() / 1000;
+      pts.forEach(function (p) {
+        p.y -= p.s; p.x += Math.sin(now * .6 + p.d) * .00012;
+        if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); }
+        var a = .25 + .55 * (0.5 + 0.5 * Math.sin(now * 1.7 + p.p));
+        g.beginPath();
+        g.arc(p.x * W, p.y * H, p.r, 0, 6.28);
+        g.fillStyle = 'rgba(239,217,160,' + a.toFixed(3) + ')';
+        g.shadowColor = 'rgba(239,217,160,.9)';
+        g.shadowBlur = 6;
+        g.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  function openEnvelope() {
+    if (opened) return;
+    opened = true;
+    music.start();
+    soundBtn.classList.add('show');
+    wrap.classList.add('opened');
+    document.getElementById('envelope').classList.add('open');
+    setTimeout(showCard, reduced ? 0 : 1500);
+  }
+
+  var wrap = document.getElementById('envelope-wrap');
+  wrap.addEventListener('click', openEnvelope);
+  wrap.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openEnvelope(); }
+  });
+
+  document.getElementById('cal-link').href = calendarLink();
+  if (MAP_URL) document.getElementById('map-link').href = MAP_URL;
+</script>
+</body>
+</html>
