@@ -796,6 +796,42 @@
     .locket::after { animation: none; }
   }
   .yt-bgm { position: fixed; left: 0; bottom: 0; width: 2px; height: 2px; border: 0; opacity: .01; pointer-events: none; z-index: -1; }
+
+  /* ---------- Envelope effects: falling petals, glowing seal, sheen, gold burst on open ---------- */
+  #scene-envelope { isolation: isolate; }
+  #scene-envelope::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(75% 60% at 50% 45%, transparent 55%, rgba(120,60,50,.18)); }
+  .env-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+  .envelope-wrap { position: relative; z-index: 2; }
+  .env-body::after { content: ""; position: absolute; inset: -30%; pointer-events: none; z-index: 5;
+    background: linear-gradient(115deg, transparent 44%, rgba(255,255,255,.45) 50%, transparent 56%);
+    transform: translateX(-75%); animation: envSheen 6s ease-in-out 1.2s infinite; }
+  @keyframes envSheen { 0%, 25% { transform: translateX(-75%); } 55%, 100% { transform: translateX(75%); } }
+  .env-seal::before { content: ""; position: absolute; inset: 7%; border-radius: 50%; border: 1.5px solid rgba(239,217,160,.75);
+    box-shadow: inset 0 0 0 3px rgba(92,15,31,.6), inset 0 0 0 4px rgba(239,217,160,.25); }
+  .env-seal::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; pointer-events: none;
+    box-shadow: 0 0 0 0 rgba(201,166,90,.55); animation: sealPulse 2.4s ease-out infinite; }
+  @keyframes sealPulse { 0% { box-shadow: 0 0 0 0 rgba(201,166,90,.55); } 70% { box-shadow: 0 0 0 18px rgba(201,166,90,0); } 100% { box-shadow: 0 0 0 0 rgba(201,166,90,0); } }
+  .seal-ini { position: relative; display: flex; align-items: baseline; justify-content: center; gap: .06em; line-height: 1;
+    font-family: var(--font-caps); font-weight: 600; font-size: clamp(15px, 5.2vw, 24px); color: var(--gold-light);
+    text-shadow: 0 1px 0 rgba(0,0,0,.35), 0 0 6px rgba(239,217,160,.25); letter-spacing: .02em; }
+  .seal-ini i { font-family: var(--font-script); font-style: normal; font-weight: 400; font-size: .95em; color: var(--gold); margin: 0 .04em; }
+  .env-card .ini { display: flex; align-items: baseline; gap: .2em; }
+  .env-card .ini i { font-family: var(--font-script); font-style: normal; letter-spacing: 0; text-transform: none; font-size: 1.1em; color: var(--gold); }
+  .envelope.open .env-seal { animation: sealPop .7s cubic-bezier(.3,1.4,.5,1) forwards; transition: none; }
+  @keyframes sealPop { 0% { transform: translate(-50%,-40%) scale(1); opacity: 1; } 35% { transform: translate(-50%,-40%) scale(1.22); opacity: 1; filter: brightness(1.3); }
+    100% { transform: translate(-50%,-40%) scale(.4) rotate(-25deg); opacity: 0; } }
+  .envelope::after { content: ""; position: absolute; left: 50%; top: 52%; width: 10%; aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+    transform: translate(-50%,-50%) scale(0); background: radial-gradient(circle, rgba(255,240,200,.95), rgba(239,217,160,.4) 40%, transparent 70%); opacity: 0; z-index: 6; }
+  .envelope.open::after { animation: envFlash 1.1s ease-out forwards; }
+  @keyframes envFlash { 0% { transform: translate(-50%,-50%) scale(0); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(-50%,-50%) scale(14); opacity: 0; } }
+  .envelope-wrap:active .envelope { transform: scale(.985); }
+  @media (prefers-reduced-motion: reduce) {
+    .env-body::after, .env-seal::after, .envelope.open::after { animation: none; }
+    .envelope.open .env-seal { animation: none; opacity: 0; }
+  }
+  #cal-link { white-space: nowrap; }
+  @media (max-width: 380px) { .btn-row .btn { padding: 9px 13px; letter-spacing: .14em; } }
 </style>
 
 </head>
@@ -828,6 +864,7 @@
 <div class="stage">
   <!-- Scene 1: the envelope -->
   <section class="scene" id="scene-envelope" aria-label="Sealed invitation">
+    <canvas class="env-fx" id="env-fx" aria-hidden="true"></canvas>
     <div class="envelope-wrap" id="envelope-wrap" role="button" tabindex="0" aria-label="Open the invitation">
       <div class="env-head">
         <div class="small">You are warmly invited</div>
@@ -835,13 +872,13 @@
       </div>
       <div class="envelope" id="envelope">
         <div class="env-body">
-          <div class="env-card">HU</div>
+          <div class="env-card"><span class="ini">U<i>&amp;</i>H</span></div>
           <div class="env-left"></div>
           <div class="env-right"></div>
           <div class="env-bottom"></div>
         </div>
         <div class="env-flap"></div>
-        <div class="env-seal" aria-hidden="true"><svg><use href="#mono"/></svg></div>
+        <div class="env-seal" aria-hidden="true"><span class="seal-ini" aria-hidden="true"><b>U</b><i>&amp;</i><b>H</b></span></div>
       </div>
       <div class="tap-hint">Tap to open</div>
       <div class="env-foot">Wedding Reception · 13 December 2026</div>
@@ -907,7 +944,7 @@
           </a>
           <a class="btn" id="cal-link" href="#" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
-            Calendar
+            Add to Calendar
           </a>
         </div>
       </div>
@@ -1184,10 +1221,107 @@
     draw();
   }
 
+
+  /* ---------- Envelope effects: drifting rose and gold petals, gold burst when the seal breaks ---------- */
+  var envFx = (function () {
+    var scene = document.getElementById('scene-envelope'), c = document.getElementById('env-fx');
+    if (!c || !c.getContext || reduced) return { burst: function () {} };
+    var g = c.getContext('2d'), W = 0, H = 0, dpr = 1, petals = [], sparks = [], last = 0, raf = 0;
+    var COLORS = [['#b8344d', '#7a1428'], ['#c94a62', '#8e1f35'], ['#e7c894', '#b08a45'], ['#f0d6c8', '#cfa999']];
+    function size() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = scene.clientWidth; H = scene.clientHeight;
+      c.width = W * dpr; c.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function petal(top) {
+      var col = COLORS[Math.random() < .62 ? (Math.random() < .5 ? 0 : 1) : (Math.random() < .6 ? 2 : 3)];
+      return { x: Math.random() * W, y: top ? -20 - Math.random() * H * .3 : Math.random() * H, r: 6 + Math.random() * 7,
+        vy: 18 + Math.random() * 22, sway: 14 + Math.random() * 26, ph: Math.random() * 6.28, sp: .6 + Math.random() * 1.1,
+        rot: Math.random() * 6.28, vr: (Math.random() - .5) * 1.6, flip: Math.random() * 6.28, a: .55 + Math.random() * .35, col: col };
+    }
+    function drawPetal(p) {
+      g.save(); g.translate(p.x + Math.sin(p.ph) * p.sway, p.y); g.rotate(p.rot); g.scale(1, Math.abs(Math.cos(p.flip)) * .8 + .2);
+      var gr = g.createLinearGradient(0, -p.r, 0, p.r); gr.addColorStop(0, p.col[0]); gr.addColorStop(1, p.col[1]);
+      g.globalAlpha = p.a; g.fillStyle = gr; g.beginPath();
+      g.moveTo(0, -p.r); g.bezierCurveTo(p.r * .95, -p.r * .55, p.r * .7, p.r * .7, 0, p.r);
+      g.bezierCurveTo(-p.r * .7, p.r * .7, -p.r * .95, -p.r * .55, 0, -p.r); g.fill(); g.restore();
+    }
+    function star(x, y, r) { g.beginPath(); g.moveTo(x, y - r); g.lineTo(x + r * .28, y - r * .28); g.lineTo(x + r, y); g.lineTo(x + r * .28, y + r * .28);
+      g.lineTo(x, y + r); g.lineTo(x - r * .28, y + r * .28); g.lineTo(x - r, y); g.lineTo(x - r * .28, y - r * .28); g.closePath(); g.fill(); }
+    function frame(t) {
+      if (scene.hidden) { raf = 0; return; }
+      var dt = Math.min(.05, (t - (last || t)) / 1000); last = t;
+      g.clearRect(0, 0, W, H);
+      for (var i = 0; i < petals.length; i++) {
+        var p = petals[i]; p.y += p.vy * dt; p.ph += p.sp * dt; p.rot += p.vr * dt; p.flip += 1.8 * dt;
+        if (p.y > H + 24) petals[i] = petal(true); else drawPetal(p);
+      }
+      for (var j = sparks.length - 1; j >= 0; j--) {
+        var s = sparks[j]; s.life -= dt; if (s.life <= 0) { sparks.splice(j, 1); continue; }
+        s.vy += 260 * dt; s.vx *= .985; s.x += s.vx * dt; s.y += s.vy * dt;
+        g.globalAlpha = Math.min(1, s.life / s.max * 1.6); g.fillStyle = s.col;
+        if (s.star) star(s.x, s.y, s.r * 1.8); else { g.beginPath(); g.arc(s.x, s.y, s.r, 0, 6.283); g.fill(); }
+      }
+      g.globalAlpha = 1;
+      raf = requestAnimationFrame(frame);
+    }
+    function burst() {
+      var seal = document.querySelector('.env-seal'), b = seal.getBoundingClientRect(), o = scene.getBoundingClientRect();
+      var cx = b.left - o.left + b.width / 2, cy = b.top - o.top + b.height / 2;
+      for (var i = 0; i < 90; i++) {
+        var a = Math.random() * 6.283, v = 120 + Math.random() * 340;
+        sparks.push({ x: cx, y: cy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 140, r: 1.2 + Math.random() * 2.4,
+          life: 1 + Math.random() * .9, max: 1.9, star: Math.random() < .3,
+          col: ['#efd9a0', '#c9a65a', '#fff3d6', '#e7c894'][i % 4] });
+      }
+      for (var k = 0; k < 14; k++) { var p = petal(false); p.x = cx; p.y = cy; p.vy = 40 + Math.random() * 60; p.sway = 40 + Math.random() * 60; petals.push(p); }
+    }
+    size(); for (var n = 0; n < (W < 500 ? 16 : 26); n++) petals.push(petal(false));
+    window.addEventListener('resize', size);
+    raf = requestAnimationFrame(frame);
+    return { burst: burst };
+  })();
+
+  /* ---------- Opening sound: wax seal crack, paper rustle, soft gold chime (synthesised, no files) ---------- */
+  function openSfx() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      var c = new AC(), t = c.currentTime + 0.02, out = c.createGain(); out.gain.value = 0.9; out.connect(c.destination);
+      var len = Math.floor(c.sampleRate * 1.2), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      function noise(at, dur, type, f0, f1, q, peak) {
+        var s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+        s.buffer = buf; f.type = type; f.Q.value = q; f.frequency.setValueAtTime(f0, at); f.frequency.exponentialRampToValueAtTime(f1, at + dur);
+        g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(peak, at + Math.min(.012, dur / 4)); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+        s.connect(f); f.connect(g); g.connect(out); s.start(at); s.stop(at + dur + .05);
+      }
+      function tone(at, hz, dur, peak, type) {
+        var o = c.createOscillator(), g = c.createGain(); o.type = type || 'sine'; o.frequency.value = hz;
+        g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(peak, at + .01); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+        o.connect(g); g.connect(out); o.start(at); o.stop(at + dur + .05);
+      }
+      // seal crack: two sharp clicks and a low thump
+      noise(t, .07, 'bandpass', 3200, 1800, 1.2, .55); noise(t + .045, .06, 'bandpass', 2400, 1400, 1.4, .35);
+      var th = c.createOscillator(), tg = c.createGain(); th.frequency.setValueAtTime(150, t); th.frequency.exponentialRampToValueAtTime(55, t + .16);
+      tg.gain.setValueAtTime(0.0001, t); tg.gain.exponentialRampToValueAtTime(.35, t + .008); tg.gain.exponentialRampToValueAtTime(0.0001, t + .2);
+      th.connect(tg); tg.connect(out); th.start(t); th.stop(t + .25);
+      // paper rustle as the flap lifts
+      noise(t + .14, .75, 'bandpass', 900, 3800, .7, .16); noise(t + .3, .55, 'highpass', 2500, 6000, .5, .07);
+      // gold chime
+      [1318.5, 1661.2, 1975.5, 2637].forEach(function (hz, k) {
+        var at = t + .42 + k * .085; tone(at, hz, 1.6, .09 - k * .012); tone(at, hz * 2.01, .7, .025);
+      });
+      setTimeout(function () { try { c.close(); } catch (e) {} }, 3200);
+    } catch (e) {}
+  }
+
   function openEnvelope() {
     if (opened) return;
     opened = true;
+    openSfx();
     music.start();
+    try { if (navigator.vibrate) navigator.vibrate(25); } catch (e) {}
+    envFx.burst();
     soundBtn.classList.add('show');
     wrap.classList.add('opened');
     document.getElementById('envelope').classList.add('open');
