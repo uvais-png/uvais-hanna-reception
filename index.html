@@ -1000,7 +1000,7 @@
       if (!yt || !yt.contentWindow) return;
       yt.contentWindow.postMessage(JSON.stringify({ event: 'command', func: func, args: args || [] }), '*');
     }
-    var VOL = 25;   // soft background level (YouTube scale 0-100)
+    var VOL = 50;   // half volume (YouTube scale 0-100). iPhones ignore this and use the phone's own volume.
     function ytPlay() { ytPost('unMute'); ytPost('setVolume', [VOL]); ytPost('playVideo'); }
     // first start on the seal tap: jump back to the beginning so the song starts exactly then
     function ytStart() { ytPost('seekTo', [0, true]); ytPlay(); }
