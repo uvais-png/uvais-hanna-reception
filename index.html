@@ -1150,7 +1150,7 @@
     }
 
     // The file is preloaded with the page so it starts instantly on the seal tap.
-    var TRACK_VOL = 0.3, preEl = null, trackGain = null;
+    var TRACK_VOL = 0.5, preEl = null, trackGain = null;
     if (TRACK_URL) { preEl = new Audio(TRACK_URL); preEl.preload = 'auto'; preEl.loop = true; try { preEl.load(); } catch (e) {} }
     function startTrack() {
       audioEl = preEl || new Audio(TRACK_URL);
