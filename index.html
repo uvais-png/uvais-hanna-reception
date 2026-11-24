@@ -836,6 +836,10 @@
   .locket .ini { position: absolute; inset: 0; display: grid; place-items: center; padding: 4% 6% 0 0;
     font-family: var(--font-script); font-size: clamp(28px, 5.4vh, 46px); line-height: 1; container-type: normal; color: var(--gold-light);
     text-shadow: 0 2px 10px rgba(0,0,0,.45), 0 0 18px rgba(239,217,160,.25); }
+  /* no circles: only the HU monogram sits between the Bismillah and the names */
+  #scene-card .cameos { display: flex; justify-content: center; width: auto; }
+  #scene-card .cameo { display: none; }
+  #scene-card .cameo-mono { width: clamp(64px, 10vh, 100px); height: clamp(64px, 10vh, 100px); }
 </style>
 
 </head>
