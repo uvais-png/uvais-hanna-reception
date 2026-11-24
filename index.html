@@ -969,7 +969,14 @@
       if (!yt || !yt.contentWindow) return;
       yt.contentWindow.postMessage(JSON.stringify({ event: 'command', func: func, args: args || [] }), '*');
     }
-    function ytPlay() { ytPost('unMute'); ytPost('setVolume', [70]); ytPost('playVideo'); }
+    var ytFaded = false;
+    function ytPlay() {
+      ytPost('unMute');
+      if (ytFaded) { ytPost('setVolume', [70]); ytPost('playVideo'); return; }
+      // first start: begin silent and fade in over about 3.5 s, under the opening chime
+      ytFaded = true; ytPost('setVolume', [0]); ytPost('playVideo');
+      var v = 0, step = setInterval(function () { v = Math.min(70, v + 3); ytPost('setVolume', [v]); if (v >= 70) clearInterval(step); }, 150);
+    }
     function ytSetup() {
       if (!YOUTUBE_ID) return;
       // Pages that forbid YouTube frames (such as the claude.ai preview) fall back to the music box right away.
@@ -1282,36 +1289,38 @@
     return { burst: burst };
   })();
 
-  /* ---------- Opening sound: wax seal crack, paper rustle, soft gold chime (synthesised, no files) ---------- */
+  /* ---------- Opening sound: a slow, soft swell with a gentle chime that eases into the music (synthesised) ---------- */
   function openSfx() {
     try {
       var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-      var c = new AC(), t = c.currentTime + 0.02, out = c.createGain(); out.gain.value = 0.9; out.connect(c.destination);
-      var len = Math.floor(c.sampleRate * 1.2), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+      var c = new AC(), t = c.currentTime + 0.03, out = c.createGain(), lp = c.createBiquadFilter();
+      lp.type = 'lowpass'; lp.frequency.value = 5200; out.gain.value = 0.9; out.connect(lp); lp.connect(c.destination);
+      var len = Math.floor(c.sampleRate * 4), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
       for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-      function noise(at, dur, type, f0, f1, q, peak) {
-        var s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
-        s.buffer = buf; f.type = type; f.Q.value = q; f.frequency.setValueAtTime(f0, at); f.frequency.exponentialRampToValueAtTime(f1, at + dur);
-        g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(peak, at + Math.min(.012, dur / 4)); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
-        s.connect(f); f.connect(g); g.connect(out); s.start(at); s.stop(at + dur + .05);
+      function swell(at, peak, attack, release) {
+        var g = c.createGain(); g.gain.setValueAtTime(0.0001, at);
+        g.gain.exponentialRampToValueAtTime(peak, at + attack); g.gain.exponentialRampToValueAtTime(0.0001, at + attack + release);
+        g.connect(out); return g;
       }
-      function tone(at, hz, dur, peak, type) {
-        var o = c.createOscillator(), g = c.createGain(); o.type = type || 'sine'; o.frequency.value = hz;
-        g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(peak, at + .01); g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
-        o.connect(g); g.connect(out); o.start(at); o.stop(at + dur + .05);
-      }
-      // seal crack: two sharp clicks and a low thump
-      noise(t, .07, 'bandpass', 3200, 1800, 1.2, .55); noise(t + .045, .06, 'bandpass', 2400, 1400, 1.4, .35);
-      var th = c.createOscillator(), tg = c.createGain(); th.frequency.setValueAtTime(150, t); th.frequency.exponentialRampToValueAtTime(55, t + .16);
-      tg.gain.setValueAtTime(0.0001, t); tg.gain.exponentialRampToValueAtTime(.35, t + .008); tg.gain.exponentialRampToValueAtTime(0.0001, t + .2);
-      th.connect(tg); tg.connect(out); th.start(t); th.stop(t + .25);
-      // paper rustle as the flap lifts
-      noise(t + .14, .75, 'bandpass', 900, 3800, .7, .16); noise(t + .3, .55, 'highpass', 2500, 6000, .5, .07);
-      // gold chime
-      [1318.5, 1661.2, 1975.5, 2637].forEach(function (hz, k) {
-        var at = t + .42 + k * .085; tone(at, hz, 1.6, .09 - k * .012); tone(at, hz * 2.01, .7, .025);
+      // airy breath, like silk unfolding
+      var n = c.createBufferSource(), nf = c.createBiquadFilter(); n.buffer = buf; nf.type = 'bandpass'; nf.Q.value = .6;
+      nf.frequency.setValueAtTime(380, t); nf.frequency.exponentialRampToValueAtTime(1600, t + 1.4); nf.frequency.exponentialRampToValueAtTime(700, t + 3.2);
+      n.connect(nf); nf.connect(swell(t, .05, .9, 2.4)); n.start(t); n.stop(t + 3.5);
+      // warm, slow pad (A and E, open and calm)
+      [[220, -4], [220, 4], [329.63, 0], [440, -3]].forEach(function (v) {
+        var o = c.createOscillator(); o.type = 'triangle'; o.frequency.value = v[0]; o.detune.value = v[1];
+        o.connect(swell(t + .1, .022, 1.1, 2.6)); o.start(t + .1); o.stop(t + 4);
       });
-      setTimeout(function () { try { c.close(); } catch (e) {} }, 3200);
+      // gentle chime, three slow notes
+      [[880, .55], [1318.51, 1.05], [1760, 1.6]].forEach(function (v, k) {
+        var at = t + v[1];
+        [[1, .045 - k * .008], [2.01, .01]].forEach(function (h) {
+          var o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = v[0] * h[0];
+          g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(h[1], at + .06); g.gain.exponentialRampToValueAtTime(0.0001, at + 2.8);
+          o.connect(g); g.connect(out); o.start(at); o.stop(at + 3);
+        });
+      });
+      setTimeout(function () { try { c.close(); } catch (e) {} }, 5000);
     } catch (e) {}
   }
 
