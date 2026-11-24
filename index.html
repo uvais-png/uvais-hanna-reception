@@ -1000,7 +1000,10 @@
       if (!yt || !yt.contentWindow) return;
       yt.contentWindow.postMessage(JSON.stringify({ event: 'command', func: func, args: args || [] }), '*');
     }
-    function ytPlay() { ytPost('unMute'); ytPost('setVolume', [75]); ytPost('playVideo'); }
+    var VOL = 45;   // comfortable background level (YouTube scale 0-100)
+    function ytPlay() { ytPost('unMute'); ytPost('setVolume', [VOL]); ytPost('playVideo'); }
+    // first start on the seal tap: jump back to the beginning so the song starts exactly then
+    function ytStart() { ytPost('seekTo', [0, true]); ytPlay(); }
     function ytSetup() {
       if (!YOUTUBE_ID) return;
       // Pages that forbid YouTube frames (such as the claude.ai preview) fall back to the music box right away.
@@ -1017,7 +1020,9 @@
       yt.addEventListener('load', function () {
         ytReady = true;
         yt.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'bgm' }), '*');
-        if (ytPending && on) ytPlay();
+        if (ytPending && on) ytStart();
+        // warm up silently so the song is buffered and starts instantly on the tap
+        else if (!started) { ytPost('mute'); ytPost('playVideo'); }
       });
       window.addEventListener('message', function (e) {
         if (!/youtube(-nocookie)?\.com$/.test((e.origin || '').replace(/^https?:\/\//, ''))) return;
@@ -1154,7 +1159,7 @@
       if (started) return;
       started = true;
       if (yt && !ytFailed) {
-        if (ytReady) ytPlay(); else ytPending = true;
+        if (ytReady) ytStart(); else ytPending = true;
         setTimeout(function () { if (!ytPlaying) ytFallback(); }, 4000);
         return;
       }
