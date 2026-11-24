@@ -840,23 +840,29 @@
   #scene-card .cameos { display: flex; justify-content: center; width: auto; }
   #scene-card .cameo { display: none; }
   #scene-card .cameo-mono { width: clamp(64px, 10vh, 100px); height: clamp(64px, 10vh, 100px); }
-  /* re-arranged without the portraits: content spreads over the full screen height and reads larger */
-  #scene-card .card { min-height: 100%; box-sizing: border-box; align-content: space-evenly; max-width: 420px;
-    gap: clamp(8px, 1.6vh, 18px); padding-block: max(36px, 5.5vh) max(34px, 5vh); }
-  #scene-card .bismillah-top .ar { font-size: clamp(22px, 3.7vh, 34px); }
-  #scene-card .bismillah-top .tr { font-size: clamp(11.5px, 1.65vh, 14.5px); max-width: 30ch; }
-  #scene-card .cameo-mono { width: clamp(48px, 7.5vh, 72px); height: clamp(48px, 7.5vh, 72px); }
-  #scene-card .names .event { font-size: clamp(11px, 1.6vh, 14px); }
-  #scene-card .names h1 { font-size: clamp(36px, min(7.6vh, 14vw), 66px); }
-  #scene-card .letter { width: min(calc(100% - 28px), 350px); padding: clamp(12px, 2.2vh, 22px) clamp(16px, 5vw, 24px); }
-  #scene-card .letter .body { font-size: clamp(14.5px, 2.2vh, 18.5px); line-height: 1.55; }
-  #scene-card .cta { gap: clamp(8px, 1.8vh, 16px); }
-  #scene-card .when { font-size: clamp(10.5px, 1.45vh, 13px); width: min(calc(100% - 28px), 340px); }
-  #scene-card .when .num { font-size: clamp(30px, 5.2vh, 46px); }
-  #scene-card .when small { font-size: clamp(8.5px, 1.15vh, 10.5px); }
-  #scene-card .where { font-size: clamp(10.5px, 1.45vh, 13px); }
-  #scene-card .btn { padding: clamp(9px, 1.4vh, 12px) clamp(13px, 4vw, 20px); }
-  @media (max-height: 700px) { #scene-card .card { padding-block: 28px 26px; } }
+  /* neat mobile layout: calm sizes, generous breathing room, content centred */
+  #scene-card .card { align-content: center; max-width: 380px; gap: clamp(10px, 2.1vh, 20px); padding-block: max(30px, 4.5vh) max(30px, 4.5vh); }
+  #scene-card .bismillah-top .ar { font-size: clamp(19px, 3vh, 26px); }
+  #scene-card .bismillah-top .tr { font-size: clamp(10.5px, 1.45vh, 12.5px); max-width: 32ch; opacity: .9; }
+  #scene-card .cameo-mono { width: clamp(44px, 6.6vh, 60px); height: clamp(44px, 6.6vh, 60px); }
+  #scene-card .names { gap: 2px; }
+  #scene-card .names .event { font-size: clamp(9.5px, 1.35vh, 11.5px); letter-spacing: .4em; }
+  #scene-card .names h1 { font-size: clamp(32px, min(6.2vh, 11vw), 50px); }
+  #scene-card .letter { width: min(calc(100% - 56px), 310px); padding: clamp(11px, 1.8vh, 16px) 18px; }
+  #scene-card .letter .body { font-size: clamp(13px, 1.95vh, 15.5px); line-height: 1.55; }
+  #scene-card .cta { gap: clamp(8px, 1.6vh, 14px); }
+  #scene-card .when { width: min(calc(100% - 64px), 300px); font-size: clamp(9.5px, 1.3vh, 11px); gap: 10px; }
+  #scene-card .when .side { padding: 5px 0; }
+  #scene-card .when .num { font-size: clamp(24px, 4vh, 34px); }
+  #scene-card .when small { font-size: clamp(8px, 1.05vh, 9.5px); }
+  #scene-card .where { font-size: clamp(9.5px, 1.3vh, 11px); line-height: 1.7; }
+  #scene-card .btn-row { gap: 10px; }
+  #scene-card .btn { padding: 8px 14px; font-size: clamp(9px, 1.2vh, 10px); letter-spacing: .18em; }
+  /* music button: small, tucked into the top-right corner so it never covers the buttons */
+  .sound { top: calc(22px + env(safe-area-inset-top, 0px)); bottom: auto; right: calc(22px + env(safe-area-inset-right, 0px));
+    width: 34px; height: 34px; background: rgba(40,6,14,.35); }
+  .sound svg { width: 16px; height: 16px; }
+  .sound .bars { height: 11px; } .sound .bars i { width: 2px; }
 </style>
 
 </head>
